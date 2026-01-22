@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>For You ✨</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      height: 100vh;
+      background: radial-gradient(circle at top, #2b1055, #000);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .container {
+      position: relative;
+      width: 380px;
+      padding: 45px 35px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.45);
+      text-align: center;
+      animation: enter 1.2s ease forwards;
+      opacity: 0;
+      transform: scale(0.9) translateY(30px);
+    }
+
+    @keyframes enter {
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      margin-bottom: 6px;
+      animation: glow 3s ease-in-out infinite;
+    }
+
+    @keyframes glow {
+      0%, 100% { text-shadow: 0 0 10px rgba(255,255,255,0.2); }
+      50% { text-shadow: 0 0 25px rgba(255,120,160,0.6); }
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      opacity: 0.8;
+      margin-bottom: 22px;
+      transition: opacity 0.4s ease;
+    }
+
+    .countdown {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 25px;
+    }
+
+    .time-box {
+      background: rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      width: 70px;
+      padding: 10px 0;
+      transition: transform 0.3s ease, background 0.3s ease;
+    }
+
+    .time-box:hover {
+      transform: translateY(-6px) scale(1.05);
+      background: rgba(255, 255, 255, 0.22);
+    }
+
+    .time-box span {
+      display: block;
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+
+    .time-box small {
+      font-size: 0.65rem;
+      opacity: 0.8;
+      letter-spacing: 1px;
+    }
+
+    .message {
+      font-size: 0.95rem;
+      line-height: 1.7;
+      min-height: 90px;
+      margin-bottom: 25px;
+      animation: fadeUp 1.5s ease forwards;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    button {
+      border: none;
+      padding: 12px 28px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #ff758c, #ff7eb3);
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    button:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 12px 30px rgba(255, 118, 147, 0.55);
+    }
+
+    .reveal {
+      display: none;
+      margin-top: 18px;
+      font-size: 0.85rem;
+      opacity: 0.85;
+      animation: fadeUp 0.8s ease forwards;
+    }
+
+    footer {
+      margin-top: 18px;
+      font-size: 0.75rem;
+      opacity: 0.6;
+    }
+
+    .star {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: white;
+      opacity: 0.8;
+      animation: twinkle 4s infinite ease-in-out;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.2; }
+      50% { opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+  <audio id="song" loop autoplay>
+    <source src="birthday-song.mp3" type="audio/mpeg">
+  </audio>
+
+  <div class="container">
+    <h1>Happy Birthday</h1>
+    <div class="subtitle">31 January — just for you</div>
+
+    <div class="countdown">
+      <div class="time-box"><span id="days">0</span><small>DAYS</small></div>
+      <div class="time-box"><span id="hours">0</span><small>HRS</small></div>
+      <div class="time-box"><span id="minutes">0</span><small>MIN</small></div>
+      <div class="time-box"><span id="seconds">0</span><small>SEC</small></div>
+    </div>
+
+    <div class="message" id="typeText"></div>
+
+    <button onclick="revealMessage()">One More Thing ✨</button>
+    <br><br>
+    <button onclick="toggleMusic()">Play Birthday Song 🎶</button>
+
+    <div class="reveal" id="hiddenMsg">
+      Some people quietly make days brighter just by being themselves.
+      Today is a reminder of that.
+    </div>
+
+    <footer>Made intentionally — not randomly</footer>
+  </div>
+
+  <script>
+    // Countdown logic
+    const targetDate = new Date('January 31, 2026 00:00:00').getTime();
+
+    setInterval(() => {
+      const now = new Date().getTime();
+      const gap = targetDate - now;
+
+      const d = Math.floor(gap / (1000 * 60 * 60 * 24));
+      const h = Math.floor((gap / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((gap / (1000 * 60)) % 60);
+      const s = Math.floor((gap / 1000) % 60);
+
+      document.getElementById('days').textContent = d;
+      document.getElementById('hours').textContent = h;
+      document.getElementById('minutes').textContent = m;
+      document.getElementById('seconds').textContent = s;
+    }, 1000);
+
+    // Typewriter effect
+    const text = "I didn’t want to just say happy birthday. I wanted to make something that lasts longer than a message.";
+    let index = 0;
+    const speed = 45;
+
+    function typeEffect() {
+      if (index < text.length) {
+        document.getElementById('typeText').textContent += text.charAt(index);
+        index++;
+        setTimeout(typeEffect, speed);
+      }
+    }
+
+    typeEffect();
+
+    // Attempt autoplay on load
+    window.addEventListener('load', () => {
+      const song = document.getElementById('song');
+      song.play().catch(() => {
+        // Autoplay blocked — wait for user interaction
+        document.body.addEventListener('click', () => song.play(), { once: true });
+      });
+    });
+
+    function revealMessage() {
+      document.getElementById('hiddenMsg').style.display = 'block';
+    }
+
+    // Star background
+    for (let i = 0; i < 60; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star');
+      star.style.left = Math.random() * 100 + 'vw';
+      star.style.top = Math.random() * 100 + 'vh';
+      star.style.animationDelay = Math.random() * 4 + 's';
+      document.body.appendChild(star);
+    }
+      function toggleMusic() {
+      const song = document.getElementById('song');
+      if (song.paused) {
+        song.play();
+      } else {
+        song.pause();
+      }
+    }
+  </script>
+
+</body>
+</html>
